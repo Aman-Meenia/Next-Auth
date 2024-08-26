@@ -1,0 +1,26 @@
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - 27017:27017
+
+  nextjs:
+    container_name: project
+    build: .
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    volumes:
+      - .:/app # Bind mount your current directory to /app in the container
+      - /app/node_modules # Ignore node_modules to avoid issues with npm/yar
+
+volumes:
+  mongodb_data:
